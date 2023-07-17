@@ -1,12 +1,12 @@
 import './App.css';
 import React from 'react'
-import ChatForm from './Componenets/openAiRes';
+import ChatBot from './ChatBot';
 
 function App() {
   return (
     <>
-    <div>
-      <ChatForm/>
+    <div className="App">
+      <ChatBot/>
     </div>
     </>
   );
