@@ -3,7 +3,7 @@ import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Typin
 import React, { useState } from 'react'
 import './App.css'
 import axios from "axios";
-import 'dotenv/config'
+import { OPENAI_API_KEY } from './CONSTANTS'
 
 const ChatBot = () => {
     const [typing, setTyping] = useState(false);
@@ -13,53 +13,65 @@ const ChatBot = () => {
             sender: "ChatBot"
         }
     ])
+    console.log(OPENAI_API_KEY)
 
     const handleSubmit = async (message) => {
-        setTyping(true)
         const newMessage = {
             message: message,
-            sender: "User",
+            sender: "user",
             direction: 'outgoing'
         }
         const newMessages = [...allPrompts, newMessage]
         setallPrompts(newMessages)
+        setTyping(true)
+        await getGPTResponse(newMessages)
 
-        const url = 'https://api.openai.com/v1/chat/completions';
+    }
+
+    async function getGPTResponse(chatMessages) {
+        console.log(allPrompts)
+        let apiMessages = chatMessages.map((msgObj) => {
+            let role = '';
+            if (msgObj.sender === "ChatBot") {
+                role = "assistant"
+            } else {
+                role = "user"
+            }
+
+            return { role: role, content: msgObj.message }
+        })
 
         const headers = {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+            'Authorization': `Bearer ${OPENAI_API_KEY}`
         };
+
+        const systemMsg = {
+            role: 'system',
+            content: "You are a Doctor. You only answers related to healthcare and medicine.don't answer other things.Deny if someone asks other than healthcare."
+        }
 
         const data = {
             model: 'gpt-3.5-turbo',
             messages: [
-                { role: 'system', content: "You are a Doctor. You only answers related to healthcare and medicine.don't answer other things.Deny if someone asks other than healthcare." },
-                { role: 'user', content: message }
+                systemMsg,
+                ...apiMessages
             ]
         };
         try {
-            const response = await axios.post(url, data, { headers });
-            const newGPTMessage = {
+            const response = await axios.post("https://api.openai.com/v1/chat/completions", data, { headers });
+            console.log(allPrompts)
+            setallPrompts([...allPrompts, {
                 message: response.data.choices[0].message.content,
                 sender: "ChatBot"
-            }
-            const newMessage1 = [...allPrompts, newGPTMessage]
-            setallPrompts(newMessage1)
+            }])
+            console.log(allPrompts)
+            setTyping(false)
+
         } catch (error) {
             console.error(error);
         }
-        
-        setTyping(false)
-        console.log(process.env.OPENAI_API_KEY)
-
     }
-
-    const getAiResponse = async () => {
-
-        
-    }
-
 
     return (
         <div className="chatBotContainer">
