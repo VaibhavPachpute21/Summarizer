@@ -10,10 +10,10 @@ const ChatBot = () => {
     const [allPrompts, setallPrompts] = useState([
         {
             message: "Hello, how can I help you!",
-            sender: "ChatBot"
+            sender: "ChatBot",
+            sentTime: "just now"
         }
     ])
-    console.log(OPENAI_API_KEY)
 
     const handleSubmit = async (message) => {
         const newMessage = {
@@ -23,13 +23,14 @@ const ChatBot = () => {
         }
         const newMessages = [...allPrompts, newMessage]
         setallPrompts(newMessages)
+        
         setTyping(true)
         await getGPTResponse(newMessages)
 
     }
 
     async function getGPTResponse(chatMessages) {
-        console.log(allPrompts)
+
         let apiMessages = chatMessages.map((msgObj) => {
             let role = '';
             if (msgObj.sender === "ChatBot") {
@@ -61,7 +62,7 @@ const ChatBot = () => {
         try {
             const response = await axios.post("https://api.openai.com/v1/chat/completions", data, { headers });
             console.log(allPrompts)
-            setallPrompts([...allPrompts, {
+            setallPrompts([...chatMessages, {
                 message: response.data.choices[0].message.content,
                 sender: "ChatBot"
             }])
@@ -76,7 +77,7 @@ const ChatBot = () => {
     return (
         <div className="chatBotContainer">
             <div>
-                <MainContainer style={{ padding: "15px", borderRadius: "15px", height: '500px' }}>
+                <MainContainer style={{ padding: "15px", borderRadius: "15px", height: '90vh' }}>
                     <ChatContainer>
                         <MessageList
                             typingIndicator={typing ? <TypingIndicator content={"Loading"} /> : null}
