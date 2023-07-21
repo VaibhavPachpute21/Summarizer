@@ -49,7 +49,8 @@ const ChatBot = () => {
 
         const systemMsg = {
             role: 'system',
-            content: "You are a Doctor. You only answers related to healthcare and medicine.don't answer other things.Deny if someone asks other than healthcare."
+            // content: "You are a Doctor. You only answers related to healthcare and medicine.don't answer other things.Deny if someone asks other than healthcare."
+            content:"You are a helpfull assitant"
         }
 
         const data = {
