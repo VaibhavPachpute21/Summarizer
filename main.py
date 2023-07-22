@@ -13,7 +13,7 @@ def extract_text_from_pdf(pdf_file):
             page = pdf_reader.pages[page_num]
             pdf_text += page.extract_text().replace("\n", "")
         words = pdf_text.split()
-        chunks = [' '.join(words[i:i+3000]) + '\n---------------------------\n' for i in range(0, len(words), 3000)]
+        chunks = [' '.join(words[i:i+2000]) + '\n---------------------------\n' for i in range(0, len(words), 2000)]
         return chunks
         # truncated_text = ' '.join(words[:4000])
         # return [truncated_text]
