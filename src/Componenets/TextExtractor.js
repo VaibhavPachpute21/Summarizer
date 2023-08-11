@@ -36,7 +36,7 @@ const TextExtractor = () => {
     const formData = new FormData();
     formData.append('file', file);
     setBookLoading(true)
-    axios.post('http://127.0.0.1:5000/get_text', formData)
+    axios.post('https://booksummarizer.pythonanywhere.com/get_text', formData)
       .then(response => {
         const allPrompts = response.data.text.map(chunk => ({
           role: "user",
@@ -69,7 +69,7 @@ const TextExtractor = () => {
     const data = {
       model: 'gpt-3.5-turbo',
       messages: [
-        { role: "user", content: `Please give A concise yet comprehensive summary of the below book content, covering all the key points, characters, plot, and themes. The summary should be coherent, engaging, and written in a manner that even those who haven't read this book can understand the content and its significance.` },
+        { role: "user", content: `Please give A concise yet comprehensive summary of the below book content, covering all the key points, characters, plot, and themes. The summary should be coherent, engaging, and written in a manner that even those who haven't read this book can understand the content and its significance. give it in a 5 to 6 lines in short` },
         allPages[pageIndex]
       ]
     };
@@ -175,8 +175,8 @@ const TextExtractor = () => {
               : <>
                 <textarea className='form-control' value={summary} style={{ width: '100%', minHeight: '500px' }} />
                 <div className='container pt-2'>
-                  <div className='d-flex justify-content-between'>
-                    <div>
+                {file?<div className='d-flex justify-content-between'>
+                  <div>
                     <Speech
                       textAsButton={true}
                       displayText={<><i  className="fa fa-microphone fs-4"></i></>}
@@ -184,9 +184,9 @@ const TextExtractor = () => {
                     />
                     </div>
                     
-                    <div>
+                    <div className=''>
                       <h6>Summarization of Page {page + 1} out of {totalPages}</h6>
-                      <select
+                      <select className='form-select'
                         onChange={(e) => {
                           setPage(Number(e.target.value));
                         }}
@@ -196,11 +196,10 @@ const TextExtractor = () => {
                         ))}
                       </select>
                     </div>
-                    <button className='btn btn-primary mt-2' onClick={summarizeWholeBook} disabled={summarizing}>
+                     <button className='btn btn-primary mt-2' onClick={summarizeWholeBook} disabled={summarizing}>
                     Summarize Whole Book
                   </button>
-
-                  </div>
+                  </div>:null}
                 </div>
 
               </>}

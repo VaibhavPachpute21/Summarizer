@@ -35,5 +35,10 @@ def get_text():
 
     return jsonify({'text': extracted_text})
 
+
+@app.route('/')
+def index():
+    return "Server running"
+
 if __name__ == '__main__':
     app.run(debug=True)
